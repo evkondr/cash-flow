@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import { prisma } from './utils/prisma-client';
 
 dotenv.config();
 const app = express();
@@ -12,8 +13,15 @@ app.use(cors({
 }));
 
 
-app.get('/', (req, res) => {
-  res.send('chat api');
+app.get('/', async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+    console.log(users);
+    res.send('chat api');
+  } catch (error) {
+    console.log(error)
+    res.send('bad request');
+  }
 });
 
 // Запуск сервера

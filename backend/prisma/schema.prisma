@@ -15,4 +15,20 @@ model User {
   id    Int     @id @default(autoincrement()) 
   email String  @unique
   name  String?
-} 
+  transactions Transactions[]
+}
+model Category {
+  id           Int     @id @default(autoincrement())
+  name         String  @unique
+  transactions Transactions[]
+}
+model Transactions {
+  id        Int      @id @default(autoincrement())
+  title     String
+  amount    Int
+  category  Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  createdAt DateTime   @default(now()) @map("created_at") 
+}
