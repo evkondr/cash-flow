@@ -14,14 +14,7 @@ app.use(cors({
 
 
 app.get('/', async (req, res) => {
-  try {
-    const users = await prisma.user.findMany();
-    console.log(users);
-    res.send('chat api');
-  } catch (error) {
-    console.log(error)
-    res.send('bad request');
-  }
+  res.send('cash-flow api');
 });
 
 // Запуск сервера
