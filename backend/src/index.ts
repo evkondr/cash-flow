@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { prisma } from './utils/prisma-client';
+import transactionsRouter from './routes/transactions-route';
+import categoriesRouter from './routes/categories-routes';
 
 dotenv.config();
 const app = express();
@@ -12,6 +14,9 @@ app.use(cors({
   credentials: true
 }));
 
+//Routes
+app.use('/api/transactions', transactionsRouter);
+app.use('/api/categories', categoriesRouter)
 
 app.get('/', async (req, res) => {
   res.send('cash-flow api');
