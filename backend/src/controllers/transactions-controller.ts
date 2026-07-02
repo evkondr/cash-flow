@@ -10,6 +10,22 @@ class TransactionsController {
       res.status(500).json({ message: 'Unexpected server error'})
     }
   }
+  static async getTransactionById(req:Request, res:Response) {
+    try {
+      const { id } = req.params as { id: string};
+      if(isNaN(parseInt(id))){
+        res.status(400).json({ message: " id is not a number"});  
+      }
+      const transaction = await prisma.transactions.findUnique({
+        where: {
+          id: parseInt(id)
+        }
+      });
+      res.status(200).json(transaction);
+    } catch (error) {
+      res.status(500).json({ message: 'Unexpected server error'})
+    }
+  }
   static async getTransactionsByUserId(req:Request, res:Response) {
     try {
       const { userId } = req.params as { userId: string};
@@ -43,6 +59,20 @@ class TransactionsController {
       return res.status(200).json(transactions);
     } catch (error) {
       return res.status(500).json({ message: 'Unexpected server error'})
+    }
+  }
+  static async deleteTransaction(req:Request, res:Response) {
+    try {
+      const { id } = req.params as { id: string};
+      const transactions = await prisma.transactions.delete({
+        where: {
+          id: parseInt(id)
+        }
+      });
+      res.status(200).json(transactions);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: 'Unexpected server error'})
     }
   }
 }
