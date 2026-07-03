@@ -58,6 +58,7 @@ class TransactionsController {
       });
       return res.status(200).json(transactions);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: 'Unexpected server error'})
     }
   }
@@ -72,6 +73,44 @@ class TransactionsController {
       res.status(200).json(transactions);
     } catch (error) {
       console.log(error);
+      res.status(500).json({ message: 'Unexpected server error'})
+    }
+  }
+  static async getSummaryById(req:Request, res:Response) {
+    try {
+      const { id } = req.params as { id: string};
+      const balanceResult = await prisma.transactions.aggregate({
+        where: {
+          userId: parseInt(id),
+        },
+        _sum: {
+          amount: true
+        }
+      });
+      const incomeResult = await prisma.transactions.aggregate({
+        where: {
+          userId: parseInt(id),
+          'AND': { amount: { gt: 0 } }
+        },
+        _sum: {
+          amount: true
+        }
+      });
+      const expensesResult = await prisma.transactions.aggregate({
+        where: {
+          userId: parseInt(id),
+          'AND': { amount: { lt: 0 } }
+        },
+        _sum: {
+          amount: true
+        }
+      });
+      res.status(200).json({
+        balance: balanceResult._sum.amount,
+        income: incomeResult._sum.amount,
+        expenses: expensesResult._sum.amount
+      });
+    } catch (error) {
       res.status(500).json({ message: 'Unexpected server error'})
     }
   }
