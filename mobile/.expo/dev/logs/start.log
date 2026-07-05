@@ -1,5 +1,0 @@
-{"_e":"root:init","_t":1783096060910,"format":"v0-jsonl","version":"57.0.4"}
-{"_e":"env:mode","_t":1783096060911,"nodeEnv":"development","babelEnv":"development","mode":"development"}
-{"_e":"env:load","_t":1783096060914,"mode":"development","files":[],"env":{}}
-{"_e":"devserver:start","_t":1783096061563,"mode":"development","web":true,"baseUrl":"","asyncRoutes":false,"routerRoot":"../..\\..\\src\\app","serverComponents":false,"serverActions":false,"serverRendering":true,"apiRoutes":false,"exporting":false}
-{"_e":"metro:config","_t":1783096061898,"serverRoot":"../..\\..","projectRoot":"../..\\..","exporting":false,"flags":{"autolinkingModuleResolution":false,"serverActions":false,"serverComponents":false,"reactCompiler":true,"optimizeGraph":false,"treeshaking":false,"logbox":false}}
