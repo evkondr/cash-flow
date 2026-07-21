@@ -7,7 +7,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Alert } from "react-native";
 
 const API_URL = "http://10.0.2";
 
@@ -51,7 +50,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setUserToken(token);
     } catch (error) {
       if (isAxiosError(error)) {
-        Alert.alert(error.response?.data?.error || "Ошибка входа");
+        alert(error.response?.data?.error || "Ошибка входа");
+      } else {
+        alert("Ошибка входа");
       }
     }
   };
