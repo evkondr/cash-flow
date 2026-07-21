@@ -15,6 +15,8 @@ model User {
   id           Int     @id @default(autoincrement()) 
   email        String  @unique
   name         String?
+  password     String
+  refreshToken String  @map("refresh_token")
 }
 model Category {
   id           Int     @id @default(autoincrement())
