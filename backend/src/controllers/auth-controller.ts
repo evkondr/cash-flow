@@ -1,6 +1,10 @@
 import bcrypt from "bcryptjs";
 import { Request, Response } from "express";
-import { createAccessToken, createRefreshToken } from "../utils/jwt";
+import {
+  createAccessToken,
+  createRefreshToken,
+  verifyRefreshToken,
+} from "../utils/jwt";
 import { prisma } from "../utils/prisma-client";
 
 export class AuthController {
@@ -80,6 +84,36 @@ export class AuthController {
         refreshToken,
       });
     } catch (error) {
+      return res.status(500).json({
+        message: "Server error",
+      });
+    }
+  }
+  static async refresh(req: Request, res: Response) {
+    try {
+      const { refreshToken } = req.body;
+      if (!refreshToken) return res.sendStatus(401);
+      const payload = verifyRefreshToken(refreshToken);
+      const user = await prisma.user.findUnique({
+        where: {
+          id: payload.userId,
+        },
+      });
+      if (!user) return res.sendStatus(401);
+      if (user.refreshToken !== refreshToken) return res.sendStatus(401);
+      const accessToken = createAccessToken(user.id);
+      const newRefreshToken = createRefreshToken(user.id);
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          refreshToken: newRefreshToken,
+        },
+      });
+      res.json({
+        accessToken,
+        refreshToken: newRefreshToken,
+      });
+    } catch {
       return res.status(500).json({
         message: "Server error",
       });
