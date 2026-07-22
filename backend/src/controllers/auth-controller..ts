@@ -36,6 +36,53 @@ export class AuthController {
         accessToken,
         refreshToken,
       });
-    } catch (error) {}
+    } catch (error) {
+      return res.status(500).json({
+        message: "Server error",
+      });
+    }
+  }
+  static async registration(req: Request, res: Response) {
+    const { email, password } = req.body;
+    try {
+      if (!email || !password) {
+        return res
+          .status(401)
+          .json({ message: "Email or Password is required" });
+      }
+      const user = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+      if (user) {
+        return res.status(401).json({ message: "User already exists" });
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const newUser = await prisma.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          name: "",
+        },
+      });
+      const accessToken = createAccessToken(newUser.id);
+      const refreshToken = createRefreshToken(newUser.id);
+      await prisma.user.update({
+        where: { id: newUser.id },
+        data: {
+          refreshToken,
+        },
+      });
+      return res.status(200).json({
+        accessToken,
+        refreshToken,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "Server error",
+      });
+    }
   }
 }
