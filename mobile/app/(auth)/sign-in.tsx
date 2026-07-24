@@ -1,27 +1,29 @@
 import { styles } from "@/assets/styles/auth.styles";
 import { COLORS } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { Link } from "expo-router";
 import React, { useState } from "react";
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../../components/AuthContext";
 
-const LoginScreen = () => {
-  const { login } = useAuth();
+const SignIn = () => {
+  const { authorize } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const onSignInPress = () => {
-    login(email, password);
+  const [isRegistration, setIsRegistration] = useState(true);
+  const onSubmitPress = () => {
+    authorize(email, password, isRegistration);
   };
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <View>
       <View style={styles.container}>
         <Image
-          source={require("../assets/images/revenue-i4.png")}
+          source={require("../../assets/images/revenue-i4.png")}
           style={styles.illustration}
         />
-        <Text style={styles.title}>Welcome Back</Text>
+        <Text style={styles.title}>
+          {isRegistration ? "Create account?" : "Welcome Back"}
+        </Text>
         {error ? (
           <View style={styles.errorBox}>
             <Ionicons name="alert-circle" size={20} color={COLORS.expense} />
@@ -43,22 +45,27 @@ const LoginScreen = () => {
           secureTextEntry={true}
           onChangeText={setPassword}
         />
-        <TouchableOpacity style={styles.button} onPress={onSignInPress}>
-          <Text style={styles.buttonText}>Sign In</Text>
+        <TouchableOpacity style={styles.button} onPress={onSubmitPress}>
+          <Text style={styles.buttonText}>
+            {isRegistration ? "Sign Up" : "Sing In"}
+          </Text>
         </TouchableOpacity>
 
         <View style={styles.footerContainer}>
-          <Text style={styles.footerText}>Don&apos;t have an account?</Text>
-
-          <Link href="/" asChild>
-            <TouchableOpacity>
-              <Text style={styles.linkText}>Sign up</Text>
-            </TouchableOpacity>
-          </Link>
+          <Text style={styles.footerText}>
+            {isRegistration
+              ? "Already have an account?"
+              : "Don't have an account?"}
+          </Text>
+          <TouchableOpacity onPress={() => setIsRegistration(!isRegistration)}>
+            <Text style={styles.linkText}>
+              {isRegistration ? "Sign In?" : "Sing Up"}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
   );
 };
 
-export default LoginScreen;
+export default SignIn;

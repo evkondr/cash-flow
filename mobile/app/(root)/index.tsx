@@ -1,7 +1,5 @@
 import { useAuth } from "@/components/AuthContext";
-import HomeScreen from "@/components/HomeScreen";
-import LoginScreen from "@/components/SignIn";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 
 export default function MainScreen() {
   const { isLoading, userToken } = useAuth();
@@ -13,6 +11,9 @@ export default function MainScreen() {
       </View>
     );
   }
-
-  return userToken == null ? <LoginScreen /> : <HomeScreen />;
+  return (
+    <View>
+      <Text>Home Page</Text>
+    </View>
+  );
 }

@@ -8,12 +8,12 @@ import {
   useState,
 } from "react";
 
-const API_URL = "http://10.0.2";
+const API_URL = "http://localhost:4000";
 
 interface IAuthContext {
   userToken: string | null;
   isLoading: boolean;
-  login: (email: string, password: string) => void;
+  authorize: (email: string, password: string, isRegistration: boolean) => void;
   logout: () => void;
 }
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
@@ -38,9 +38,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     bootstrapAsync();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const authorize = async (
+    email: string,
+    password: string,
+    isRegistration: boolean,
+  ) => {
     try {
-      const response = await axios.post(`${API_URL}/login`, {
+      const authUrl = isRegistration ? "register" : "login";
+      const response = await axios.post(`${API_URL}/${authUrl}}`, {
         email,
         password,
       });
@@ -50,9 +55,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setUserToken(token);
     } catch (error) {
       if (isAxiosError(error)) {
-        alert(error.response?.data?.error || "Ошибка входа");
+        alert(error.response?.data?.error || "Ошибка запроса");
       } else {
-        alert("Ошибка входа");
+        alert("Ошибка запроса");
       }
     }
   };
@@ -62,7 +67,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <AuthContext.Provider value={{ userToken, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ userToken, isLoading, authorize, logout }}>
       {children}
     </AuthContext.Provider>
   );
