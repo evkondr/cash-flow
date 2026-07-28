@@ -2,7 +2,14 @@ import { styles } from "@/assets/styles/auth.styles";
 import { COLORS } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  KeyboardAvoidingView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useAuth } from "../../components/AuthContext";
 
 const SignIn = () => {
@@ -15,7 +22,7 @@ const SignIn = () => {
     authorize(email, password, isRegistration);
   };
   return (
-    <View>
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
       <View style={styles.container}>
         <Image
           source={require("../../assets/images/revenue-i4.png")}
@@ -64,7 +71,7 @@ const SignIn = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

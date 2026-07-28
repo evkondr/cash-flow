@@ -48,6 +48,7 @@ export class AuthController {
   }
   static async registration(req: Request, res: Response) {
     const { email, password } = req.body;
+    console.log(email, password);
     try {
       if (!email || !password) {
         return res
@@ -84,6 +85,7 @@ export class AuthController {
         refreshToken,
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({
         message: "Server error",
       });
@@ -112,6 +114,25 @@ export class AuthController {
       res.json({
         accessToken,
         refreshToken: newRefreshToken,
+      });
+    } catch {
+      return res.status(500).json({
+        message: "Server error",
+      });
+    }
+  }
+  static async logout(req: Request, res: Response) {
+    try {
+      await prisma.user.update({
+        // @ts-ignore
+        where: { id: req.user.id },
+        data: {
+          refreshToken: "",
+        },
+      });
+      res.json({
+        accessToken: "",
+        refreshToken: "",
       });
     } catch {
       return res.status(500).json({

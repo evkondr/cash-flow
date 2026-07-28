@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 
-const API_URL = "http://localhost:4000";
+const API_URL = "http://192.168.31.154:4000/api";
 
 interface IAuthContext {
   userToken: string | null;
@@ -45,17 +45,19 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   ) => {
     try {
       const authUrl = isRegistration ? "register" : "login";
-      const response = await axios.post(`${API_URL}/${authUrl}}`, {
+      const response = await axios.post(`${API_URL}/auth/${authUrl}`, {
         email,
         password,
       });
-      const { token } = response.data;
+      const { refreshToken, accessToken } = response.data;
 
-      await SecureStore.setItemAsync("userToken", token);
-      setUserToken(token);
+      await SecureStore.setItemAsync("userToken", accessToken);
+      await SecureStore.setItemAsync("refreshToken", refreshToken);
+      setUserToken(accessToken);
     } catch (error) {
       if (isAxiosError(error)) {
-        alert(error.response?.data?.error || "Ошибка запроса");
+        console.log(error);
+        alert(error.message);
       } else {
         alert("Ошибка запроса");
       }

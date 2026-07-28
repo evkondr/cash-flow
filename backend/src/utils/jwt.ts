@@ -2,8 +2,8 @@ import dotenv from "dotenv";
 import jwt, { JwtPayload } from "jsonwebtoken";
 dotenv.config();
 
-const ACCESS_SECRET = process.env.ACCESS_TOKEN as string;
-const REFRESH_SECRET = process.env.REFRESH_TOKEN as string;
+const ACCESS_SECRET = process.env.ACCESS_SECRET as string;
+const REFRESH_SECRET = process.env.REFRESH_SECRET as string;
 export interface AccessTokenPayload extends JwtPayload {
   userId: number;
 }
