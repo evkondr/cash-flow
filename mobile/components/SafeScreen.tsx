@@ -13,6 +13,7 @@ const SafeScreen = ({ children }: PropsWithChildren) => {
         paddingTop: insets.top,
         flex: 1,
         backgroundColor: COLORS.background,
+        paddingBottom: insets.bottom,
       }}
     >
       {children}

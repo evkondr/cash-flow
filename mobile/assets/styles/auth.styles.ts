@@ -25,7 +25,6 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: 12,
     padding: 15,
-    marginBottom: 16,
     borderWidth: 1,
     borderColor: COLORS.border,
     fontSize: 16,
@@ -33,6 +32,11 @@ export const styles = StyleSheet.create({
   },
   errorInput: {
     borderColor: COLORS.expense,
+  },
+  errorInputText: {
+    color: COLORS.expense,
+    marginTop: 3,
+    marginLeft: 10,
   },
   button: {
     backgroundColor: COLORS.primary,

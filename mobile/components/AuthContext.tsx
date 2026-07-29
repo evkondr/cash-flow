@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 
-const API_URL = "http://192.168.31.154:4000/api";
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 interface IAuthContext {
   userToken: string | null;
@@ -26,7 +26,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     const bootstrapAsync = async () => {
       let token: string | null = null;
       try {
-        token = await SecureStore.getItemAsync("userToken");
+        if (SecureStore) {
+          token = await SecureStore.getItemAsync("userToken");
+        } else {
+          token = localStorage.getItem("userToken");
+        }
       } catch (e) {
         console.log("Ошибка чтения токена", e);
       }
@@ -50,9 +54,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         password,
       });
       const { refreshToken, accessToken } = response.data;
+      if (SecureStore) {
+        await SecureStore.setItemAsync("userToken", accessToken);
+        await SecureStore.setItemAsync("refreshToken", refreshToken);
+      } else {
+        localStorage.set("userToken", accessToken);
+        localStorage.set("refreshToken", refreshToken);
+      }
 
-      await SecureStore.setItemAsync("userToken", accessToken);
-      await SecureStore.setItemAsync("refreshToken", refreshToken);
       setUserToken(accessToken);
     } catch (error) {
       if (isAxiosError(error)) {
