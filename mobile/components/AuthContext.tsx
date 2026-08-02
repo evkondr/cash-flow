@@ -31,10 +31,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         } else {
           token = await SecureStore.getItemAsync("accessToken");
         }
+        setUserToken(token);
       } catch (e) {
         console.log("Ошибка чтения токена", e);
       }
-      if (!token) setUserToken(token);
+      if (!token) setUserToken(null);
 
       setIsLoading(false);
     };
