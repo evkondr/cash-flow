@@ -1,4 +1,5 @@
-import axios, { isAxiosError } from "axios";
+import { httpApi } from "@/api/http";
+import { isAxiosError } from "axios";
 import * as SecureStore from "expo-secure-store";
 import {
   createContext,
@@ -7,8 +8,7 @@ import {
   useEffect,
   useState,
 } from "react";
-
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
+import { Platform } from "react-native";
 
 interface IAuthContext {
   userToken: string | null;
@@ -26,10 +26,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     const bootstrapAsync = async () => {
       let token: string | null = null;
       try {
-        if (SecureStore) {
-          token = await SecureStore.getItemAsync("userToken");
+        if (Platform.OS === "web") {
+          token = localStorage.getItem("accessToken");
         } else {
-          token = localStorage.getItem("userToken");
+          token = await SecureStore.getItemAsync("accessToken");
         }
       } catch (e) {
         console.log("Ошибка чтения токена", e);
@@ -49,21 +49,22 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   ) => {
     try {
       const authUrl = isRegistration ? "register" : "login";
-      const response = await axios.post(`${API_URL}/auth/${authUrl}`, {
+      const response = await httpApi.post(`/auth/${authUrl}`, {
         email,
         password,
       });
       const { refreshToken, accessToken } = response.data;
-      if (SecureStore) {
-        await SecureStore.setItemAsync("userToken", accessToken);
-        await SecureStore.setItemAsync("refreshToken", refreshToken);
+      if (Platform.OS === "web") {
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
       } else {
-        localStorage.set("userToken", accessToken);
-        localStorage.set("refreshToken", refreshToken);
+        await SecureStore.setItemAsync("accessToken", accessToken);
+        await SecureStore.setItemAsync("refreshToken", refreshToken);
       }
 
       setUserToken(accessToken);
     } catch (error) {
+      console.log(error);
       if (isAxiosError(error)) {
         console.log(error);
         alert(error.message);
@@ -73,7 +74,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     }
   };
   const logout = async () => {
-    await SecureStore.deleteItemAsync("userToken");
+    await SecureStore.deleteItemAsync("accessToken");
     setUserToken(null);
   };
 
