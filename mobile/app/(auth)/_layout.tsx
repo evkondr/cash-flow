@@ -3,8 +3,8 @@ import { Redirect, Stack } from "expo-router";
 import React from "react";
 
 export default function AuthLayout() {
-  const { userToken } = useAuth();
-  if (userToken) {
+  const { userId } = useAuth();
+  if (userId) {
     return <Redirect href="/" />;
   }
   return <Stack screenOptions={{ headerShown: false }} />;

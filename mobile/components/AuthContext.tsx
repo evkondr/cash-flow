@@ -11,7 +11,7 @@ import {
 import { Platform } from "react-native";
 
 interface IAuthContext {
-  userToken: string | null;
+  userId: string | null;
   isLoading: boolean;
   authorize: (email: string, password: string, isRegistration: boolean) => void;
   logout: () => void;
@@ -19,42 +19,33 @@ interface IAuthContext {
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [userToken, setUserToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
-    const bootstrapAsync = async () => {
-      let token: string | null = null;
+    const checkAuth = async () => {
       try {
-        if (Platform.OS === "web") {
-          token = localStorage.getItem("accessToken");
-        } else {
-          token = await SecureStore.getItemAsync("accessToken");
-        }
-        setUserToken(token);
-      } catch (e) {
-        console.log("Ошибка чтения токена", e);
+        const { data } = await httpApi.get(`/auth/check`);
+        setUserId(data.userId);
+      } catch (error) {
+        setUserId(null);
+        console.log(error);
       }
-      if (!token) setUserToken(null);
-
-      setIsLoading(false);
     };
-
-    bootstrapAsync();
+    checkAuth();
   }, []);
-
+  const [userId, setUserId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const authorize = async (
     email: string,
     password: string,
     isRegistration: boolean,
   ) => {
+    setIsLoading(true);
     try {
       const authUrl = isRegistration ? "register" : "login";
       const response = await httpApi.post(`/auth/${authUrl}`, {
         email,
         password,
       });
-      const { refreshToken, accessToken } = response.data;
+      const { refreshToken, accessToken, userId } = response.data;
       if (Platform.OS === "web") {
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
@@ -62,25 +53,30 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         await SecureStore.setItemAsync("accessToken", accessToken);
         await SecureStore.setItemAsync("refreshToken", refreshToken);
       }
-
-      setUserToken(accessToken);
+      setUserId(userId);
+      setIsLoading(false);
     } catch (error) {
-      console.log(error);
       if (isAxiosError(error)) {
         console.log(error);
         alert(error.message);
       } else {
         alert("Ошибка запроса");
       }
+      setIsLoading(false);
     }
   };
   const logout = async () => {
-    await SecureStore.deleteItemAsync("accessToken");
-    setUserToken(null);
+    if (Platform.OS === "web") {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+    } else {
+      await SecureStore.deleteItemAsync("accessToken");
+      await SecureStore.deleteItemAsync("refreshToken");
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ userToken, isLoading, authorize, logout }}>
+    <AuthContext.Provider value={{ userId, isLoading, authorize, logout }}>
       {children}
     </AuthContext.Provider>
   );

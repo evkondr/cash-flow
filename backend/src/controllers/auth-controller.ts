@@ -37,6 +37,7 @@ export class AuthController {
         },
       });
       return res.status(200).json({
+        userId: user.id,
         accessToken,
         refreshToken,
       });
@@ -85,7 +86,6 @@ export class AuthController {
         refreshToken,
       });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({
         message: "Server error",
       });
@@ -133,6 +133,17 @@ export class AuthController {
       res.json({
         accessToken: "",
         refreshToken: "",
+      });
+    } catch {
+      return res.status(500).json({
+        message: "Server error",
+      });
+    }
+  }
+  static async checkAuth(req: Request, res: Response) {
+    try {
+      res.json({
+        userId: req.userId,
       });
     } catch {
       return res.status(500).json({
