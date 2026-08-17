@@ -2,30 +2,6 @@ import { Request, Response } from "express";
 import { prisma } from "../utils/prisma-client";
 
 class TransactionsController {
-  static async getTransactions(req: Request, res: Response) {
-    try {
-      const transactions = await prisma.transactions.findMany();
-      res.status(200).json(transactions);
-    } catch (error) {
-      res.status(500).json({ message: "Unexpected server error" });
-    }
-  }
-  static async getTransactionById(req: Request, res: Response) {
-    try {
-      const { id } = req.params as { id: string };
-      if (isNaN(parseInt(id))) {
-        res.status(400).json({ message: " id is not a number" });
-      }
-      const transaction = await prisma.transactions.findUnique({
-        where: {
-          id: parseInt(id),
-        },
-      });
-      res.status(200).json(transaction);
-    } catch (error) {
-      res.status(500).json({ message: "Unexpected server error" });
-    }
-  }
   static async getTransactionsByUserId(req: Request, res: Response) {
     try {
       const { userId } = req.params as { userId: string };
@@ -42,13 +18,17 @@ class TransactionsController {
   }
   static async createTransaction(req: Request, res: Response) {
     try {
-      const { title, amount, userId, categoryId } = req.body;
-
+      const { title, amount, categoryId } = req.body;
+      const userId = req.userId;
       const transactions = await prisma.transactions.create({
         data: {
           title,
           amount,
-          userId,
+          user: {
+            connect: {
+              id: userId as number,
+            },
+          },
           category: {
             connect: {
               id: categoryId as number,

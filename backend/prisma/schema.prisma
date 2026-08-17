@@ -17,6 +17,7 @@ model User {
   name         String?
   password     String
   refreshToken String?  @map("refresh_token")
+  transactions Transactions[]
 }
 model Category {
   id           Int     @id @default(autoincrement())
@@ -29,6 +30,7 @@ model Transactions {
   amount               Int
   category             Category @relation(fields: [categoryId], references: [id])
   categoryId           Int      @map("category_id")
+  user                 User     @relation(fields: [userId], references: [id])
   userId               Int      @map("user_id")
   createdAt            DateTime @default(now()) @map("created_at") 
 }

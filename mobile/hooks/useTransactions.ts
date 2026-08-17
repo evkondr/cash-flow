@@ -27,7 +27,7 @@ export const useTransactions = (userId: string) => {
 
   const fetchSummary = useCallback(async () => {
     try {
-      const response = await httpApi(`$/transactions/summary/${userId}`);
+      const response = await httpApi(`/transactions/summary/${userId}`);
       setSummary(response.data);
     } catch (error) {
       console.error("Error fetching summary:", error);

@@ -5,9 +5,6 @@ import authMiddleware from "../middleware/authMiddleware";
 const transactionsRouter = express.Router();
 
 transactionsRouter.use(authMiddleware);
-
-transactionsRouter.get("/", TransactionsController.getTransactions);
-transactionsRouter.get("/:id", TransactionsController.getTransactionById);
 transactionsRouter.get(
   "/:userId",
   TransactionsController.getTransactionsByUserId,
