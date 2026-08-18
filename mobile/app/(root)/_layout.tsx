@@ -4,7 +4,6 @@ import React from "react";
 
 export default function RooLayout() {
   const { userId } = useAuth();
-  console.log(userId);
   if (!userId) {
     return <Redirect href="/sign-in" />;
   }

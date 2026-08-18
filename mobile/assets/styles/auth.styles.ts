@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   },
   illustration: {
     alignSelf: "center",
-    height: 310,
+    height: 200,
     width: 300,
     resizeMode: "contain",
   },
