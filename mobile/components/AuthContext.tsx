@@ -73,6 +73,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       await SecureStore.deleteItemAsync("accessToken");
       await SecureStore.deleteItemAsync("refreshToken");
     }
+    setUserId(null);
   };
 
   return (
