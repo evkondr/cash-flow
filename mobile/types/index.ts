@@ -11,3 +11,8 @@ export interface Category {
   id: number;
   name: string;
 }
+export type Summary = {
+  balance: number;
+  income: number;
+  expenses: number;
+};

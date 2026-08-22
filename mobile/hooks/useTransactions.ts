@@ -1,14 +1,14 @@
 // react custom hook file
 
 import { httpApi } from "@/api/http";
-import { Transaction } from "@/types";
+import { Summary, Transaction } from "@/types";
 import { isAxiosError } from "axios";
 import { useCallback, useState } from "react";
 import { Alert } from "react-native";
 
 export const useTransactions = (userId: string) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [summary, setSummary] = useState({
+  const [summary, setSummary] = useState<Summary>({
     balance: 0,
     income: 0,
     expenses: 0,
@@ -18,21 +18,21 @@ export const useTransactions = (userId: string) => {
   // useCallback is used for performance reasons, it will memoize the function
   const fetchTransactions = useCallback(async () => {
     try {
-      const response = await httpApi<Transaction[]>(`/transactions/${userId}`);
+      const response = await httpApi<Transaction[]>(`/transactions`);
       setTransactions(response.data);
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
-  }, [userId]);
+  }, []);
 
   const fetchSummary = useCallback(async () => {
     try {
-      const response = await httpApi(`/transactions/summary/${userId}`);
+      const response = await httpApi(`/transactions/summary/`);
       setSummary(response.data);
     } catch (error) {
       console.error("Error fetching summary:", error);
     }
-  }, [userId]);
+  }, []);
 
   const loadData = useCallback(async () => {
     if (!userId) return;

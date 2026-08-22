@@ -86,9 +86,9 @@ class TransactionsController {
         },
       });
       res.status(200).json({
-        balance: balanceResult._sum.amount,
-        income: incomeResult._sum.amount,
-        expenses: expensesResult._sum.amount,
+        balance: balanceResult._sum.amount || 0,
+        income: incomeResult._sum.amount || 0,
+        expenses: expensesResult._sum.amount || 0,
       });
     } catch (error) {
       res.status(500).json({ message: "Unexpected server error" });

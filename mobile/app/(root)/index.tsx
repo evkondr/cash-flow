@@ -1,5 +1,6 @@
 import { styles } from "@/assets/styles/home.styles";
 import { useAuth } from "@/components/AuthContext";
+import BalanceCard from "@/components/BalanceCard";
 import LogoutButton from "@/components/LogoutButton";
 import { useTransactions } from "@/hooks/useTransactions";
 import { Ionicons } from "@expo/vector-icons";
@@ -10,9 +11,11 @@ import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native";
 
 export default function MainScreen() {
   const { isLoading: isAuthLoading, userId } = useAuth();
-  const { loadData, isLoading: isTransactionsLoading } = useTransactions(
-    userId as string,
-  );
+  const {
+    loadData,
+    isLoading: isTransactionsLoading,
+    summary,
+  } = useTransactions(userId as string);
   const router = useRouter();
   useEffect(() => {
     loadData();
@@ -52,6 +55,7 @@ export default function MainScreen() {
             <LogoutButton />
           </View>
         </View>
+        <BalanceCard summary={summary} />
       </View>
     </View>
   );
