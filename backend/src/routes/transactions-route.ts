@@ -5,11 +5,8 @@ import authMiddleware from "../middleware/authMiddleware";
 const transactionsRouter = express.Router();
 
 transactionsRouter.use(authMiddleware);
-transactionsRouter.get(
-  "/:userId",
-  TransactionsController.getTransactionsByUserId,
-);
-transactionsRouter.get("/summary/:id", TransactionsController.getSummaryById);
+transactionsRouter.get("/", TransactionsController.getTransactionsByUserId);
+transactionsRouter.get("/summary", TransactionsController.getSummaryById);
 transactionsRouter.post("/", TransactionsController.createTransaction);
 transactionsRouter.delete("/:id", TransactionsController.deleteTransaction);
 

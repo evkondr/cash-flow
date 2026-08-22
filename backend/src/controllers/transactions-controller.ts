@@ -4,10 +4,10 @@ import { prisma } from "../utils/prisma-client";
 class TransactionsController {
   static async getTransactionsByUserId(req: Request, res: Response) {
     try {
-      const { userId } = req.params as { userId: string };
+      const userId = req.userId;
       const transactions = await prisma.transactions.findMany({
         where: {
-          userId: parseInt(userId),
+          userId: userId,
         },
       });
       res.status(200).json(transactions);
@@ -58,10 +58,10 @@ class TransactionsController {
   }
   static async getSummaryById(req: Request, res: Response) {
     try {
-      const { id } = req.params as { id: string };
+      const userId = req.userId;
       const balanceResult = await prisma.transactions.aggregate({
         where: {
-          userId: parseInt(id),
+          userId: userId,
         },
         _sum: {
           amount: true,
@@ -69,7 +69,7 @@ class TransactionsController {
       });
       const incomeResult = await prisma.transactions.aggregate({
         where: {
-          userId: parseInt(id),
+          userId: userId,
           AND: { amount: { gt: 0 } },
         },
         _sum: {
@@ -78,7 +78,7 @@ class TransactionsController {
       });
       const expensesResult = await prisma.transactions.aggregate({
         where: {
-          userId: parseInt(id),
+          userId: userId,
           AND: { amount: { lt: 0 } },
         },
         _sum: {
