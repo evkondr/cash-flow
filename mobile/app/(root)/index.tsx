@@ -57,6 +57,9 @@ export default function MainScreen() {
         </View>
         <BalanceCard summary={summary} />
       </View>
+      <View style={styles.transactionsHeaderContainer}>
+        <Text style={styles.sectionTitle}>Recent Transactions</Text>
+      </View>
     </View>
   );
 }

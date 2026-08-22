@@ -56,5 +56,21 @@ export const THEMES = {
   purple: purpleTheme,
   ocean: oceanTheme,
 };
+type IconName =
+  | "fast-food"
+  | "cart"
+  | "car"
+  | "film"
+  | "receipt"
+  | "ellipsis-horizontal";
+export const CATEGORY_ICONS: Record<string, IconName> = {
+  "Food & Drinks": "fast-food",
+  Shopping: "cart",
+  Transportation: "car",
+  Entertainment: "film",
+  Bills: "receipt",
+  Income: "receipt",
+  Other: "ellipsis-horizontal",
+};
 
 export const COLORS = THEMES.coffee;

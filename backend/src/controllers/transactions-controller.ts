@@ -9,6 +9,9 @@ class TransactionsController {
         where: {
           userId: userId,
         },
+        include: {
+          category: true,
+        },
       });
       res.status(200).json(transactions);
     } catch (error) {
