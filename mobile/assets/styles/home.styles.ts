@@ -129,7 +129,6 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     color: COLORS.text,
-    marginBottom: 15,
   },
   transactionCard: {
     backgroundColor: COLORS.card,

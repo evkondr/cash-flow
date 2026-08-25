@@ -8,13 +8,14 @@ import { useTransactions } from "@/hooks/useTransactions";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "@react-navigation/elements";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   FlatList,
   Image,
   Platform,
+  RefreshControl,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -29,6 +30,12 @@ export default function MainScreen() {
     transactions,
   } = useTransactions(userId as string);
   const router = useRouter();
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadData();
+    setRefreshing(false);
+  };
   const handleDelete = (id: number) => {
     if (Platform.OS === "web") {
       const isConfirmed = confirm("A you sure?");
@@ -85,9 +92,9 @@ export default function MainScreen() {
           </View>
         </View>
         <BalanceCard summary={summary} />
-      </View>
-      <View style={styles.transactionsHeaderContainer}>
-        <Text style={styles.sectionTitle}>Recent Transactions</Text>
+        <View style={styles.transactionsHeaderContainer}>
+          <Text style={styles.sectionTitle}>Recent Transactions</Text>
+        </View>
       </View>
       <FlatList
         style={styles.transactionsList}
@@ -97,6 +104,9 @@ export default function MainScreen() {
         )}
         ListEmptyComponent={<EmptyTransactions />}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </View>
   );
