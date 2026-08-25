@@ -1,13 +1,23 @@
 import { styles } from "@/assets/styles/home.styles";
 import { useAuth } from "@/components/AuthContext";
 import BalanceCard from "@/components/BalanceCard";
+import EmptyTransactions from "@/components/EmptyTransactions";
 import LogoutButton from "@/components/LogoutButton";
+import TransactionItem from "@/components/TransactionItem";
 import { useTransactions } from "@/hooks/useTransactions";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "@react-navigation/elements";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
-import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Image,
+  Platform,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function MainScreen() {
   const { isLoading: isAuthLoading, userId } = useAuth();
@@ -15,8 +25,27 @@ export default function MainScreen() {
     loadData,
     isLoading: isTransactionsLoading,
     summary,
+    deleteTransaction,
+    transactions,
   } = useTransactions(userId as string);
   const router = useRouter();
+  const handleDelete = (id: number) => {
+    if (Platform.OS === "web") {
+      const isConfirmed = confirm("A you sure?");
+      if (isConfirmed) {
+        deleteTransaction(id);
+      }
+    } else {
+      Alert.alert("Delete transaction", "Are you sure to delete transaction?", [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => deleteTransaction(id),
+        },
+      ]);
+    }
+  };
   useEffect(() => {
     loadData();
   }, [loadData]);
@@ -60,6 +89,15 @@ export default function MainScreen() {
       <View style={styles.transactionsHeaderContainer}>
         <Text style={styles.sectionTitle}>Recent Transactions</Text>
       </View>
+      <FlatList
+        style={styles.transactionsList}
+        data={transactions}
+        renderItem={({ item }) => (
+          <TransactionItem item={item} onDelete={handleDelete} />
+        )}
+        ListEmptyComponent={<EmptyTransactions />}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 }

@@ -48,7 +48,7 @@ export const useTransactions = (userId: string) => {
     }
   }, [fetchTransactions, fetchSummary, userId]);
 
-  const deleteTransaction = async (id: string) => {
+  const deleteTransaction = async (id: number) => {
     try {
       await httpApi(`/transactions/${id}`, {
         method: "DELETE",
