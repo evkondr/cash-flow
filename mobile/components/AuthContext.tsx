@@ -22,10 +22,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        setIsLoading(true);
         const { data } = await httpApi.get(`/auth/check`);
         setUserId(data.userId);
+        setIsLoading(false);
       } catch (error) {
         setUserId(null);
+        setIsLoading(false);
         console.log(error);
       }
     };

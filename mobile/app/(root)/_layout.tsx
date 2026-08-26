@@ -3,7 +3,8 @@ import { Redirect, Stack } from "expo-router";
 import React from "react";
 
 export default function RooLayout() {
-  const { userId } = useAuth();
+  const { userId, isLoading } = useAuth();
+  if (isLoading) return null;
   if (!userId) {
     return <Redirect href="/sign-in" />;
   }
