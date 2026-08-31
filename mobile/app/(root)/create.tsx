@@ -2,7 +2,9 @@ import { httpApi } from "@/api/http";
 import { styles } from "@/assets/styles/create.styles";
 import { COLORS } from "@/constants/colors";
 import useCategories from "@/hooks/useCategories";
+import messageAlert from "@/utils/message-alert";
 import { Ionicons } from "@expo/vector-icons";
+import { isAxiosError } from "axios";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -24,15 +26,15 @@ const CreateScreen = () => {
 
   const [title, setTitle] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [isExpense, setIsExpense] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleCreate = async () => {
     if (!title.trim())
-      return Alert.alert("Error", "Please enter a transaction title");
+      return messageAlert("Please enter a transaction title", "Error");
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-      Alert.alert("Error", "Please enter a valid amount");
+      messageAlert("Please enter a valid amount", "Error");
       return;
     }
     if (!selectedCategory)
@@ -42,8 +44,21 @@ const CreateScreen = () => {
       const formattedAmount = isExpense
         ? -Math.abs(parseFloat(amount))
         : Math.abs(parseFloat(amount));
-      const response = await httpApi.post("/transactions", {});
-    } catch (error) {}
+      await httpApi.post("/transactions", {
+        title,
+        amount: formattedAmount,
+        categoryId: selectedCategory,
+      });
+      setTitle("");
+      setAmount("");
+      messageAlert("transaction added", "Success");
+    } catch (error) {
+      if (isAxiosError(error)) {
+        messageAlert(error.message, "Error");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -52,7 +67,7 @@ const CreateScreen = () => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => router.back()}
+          onPress={() => router.push("/")}
         >
           <Ionicons name="arrow-back" size={24} color={COLORS.text} />
         </TouchableOpacity>
@@ -162,22 +177,22 @@ const CreateScreen = () => {
               key={item.id}
               style={[
                 styles.categoryButton,
-                selectedCategory === item.name && styles.categoryButtonActive,
+                selectedCategory === item.id && styles.categoryButtonActive,
               ]}
-              onPress={() => setSelectedCategory(item.name)}
+              onPress={() => setSelectedCategory(item.id)}
             >
               <Ionicons
                 name={item.icon}
                 size={20}
                 color={
-                  selectedCategory === item.name ? COLORS.white : COLORS.text
+                  selectedCategory === item.id ? COLORS.white : COLORS.text
                 }
                 style={styles.categoryIcon}
               />
               <Text
                 style={[
                   styles.categoryButtonText,
-                  selectedCategory === item.name &&
+                  selectedCategory === item.id &&
                     styles.categoryButtonTextActive,
                 ]}
               >

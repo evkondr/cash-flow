@@ -2,9 +2,9 @@
 
 import { httpApi } from "@/api/http";
 import { Summary, Transaction } from "@/types";
+import messageAlert from "@/utils/message-alert";
 import { isAxiosError } from "axios";
 import { useCallback, useState } from "react";
-import { Alert } from "react-native";
 
 export const useTransactions = (userId: string) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -21,6 +21,9 @@ export const useTransactions = (userId: string) => {
       const response = await httpApi<Transaction[]>(`/transactions`);
       setTransactions(response.data);
     } catch (error) {
+      if (isAxiosError(error)) {
+        messageAlert(error.message, "Error");
+      }
       console.error("Error fetching transactions:", error);
     }
   }, []);
@@ -30,6 +33,9 @@ export const useTransactions = (userId: string) => {
       const response = await httpApi(`/transactions/summary/`);
       setSummary(response.data);
     } catch (error) {
+      if (isAxiosError(error)) {
+        messageAlert(error.message, "Error");
+      }
       console.error("Error fetching summary:", error);
     }
   }, []);
@@ -42,6 +48,9 @@ export const useTransactions = (userId: string) => {
       // can be run in parallel
       await Promise.all([fetchTransactions(), fetchSummary()]);
     } catch (error) {
+      if (isAxiosError(error)) {
+        messageAlert(error.message, "Error");
+      }
       console.error("Error loading data:", error);
     } finally {
       setIsLoading(false);
@@ -55,9 +64,11 @@ export const useTransactions = (userId: string) => {
       });
       // Refresh data after deletion
       loadData();
-      Alert.alert("Success", "Transaction deleted successfully");
+      messageAlert("Transaction deleted successfully0", "Success");
     } catch (error) {
-      if (isAxiosError(error)) Alert.alert("Error", error.message);
+      if (isAxiosError(error)) {
+        messageAlert(error.message, "Error");
+      }
       console.error("Error deleting transaction:", error);
     }
   };
