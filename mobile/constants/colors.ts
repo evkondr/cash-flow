@@ -1,3 +1,5 @@
+import { IconName } from "@/types";
+
 const coffeeTheme = {
   primary: "#8B593E",
   background: "#FFF8F3",
@@ -56,13 +58,7 @@ export const THEMES = {
   purple: purpleTheme,
   ocean: oceanTheme,
 };
-type IconName =
-  | "fast-food"
-  | "cart"
-  | "car"
-  | "film"
-  | "receipt"
-  | "ellipsis-horizontal";
+
 export const CATEGORY_ICONS: Record<string, IconName> = {
   "Food & Drinks": "fast-food",
   Shopping: "cart",

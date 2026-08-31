@@ -1,3 +1,4 @@
+
 export default [
   { id: "food", name: "Food & Drinks", icon: "fast-food" },
   { id: "shopping", name: "Shopping", icon: "cart" },

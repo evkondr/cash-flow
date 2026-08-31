@@ -8,11 +8,19 @@ export interface Transaction {
   category?: Category;
 }
 export interface Category {
-  id: number;
+  id: string;
   name: string;
+  icon: IconName;
 }
 export type Summary = {
   balance: number;
   income: number;
   expenses: number;
 };
+export type IconName =
+  | "fast-food"
+  | "cart"
+  | "car"
+  | "film"
+  | "receipt"
+  | "ellipsis-horizontal";
