@@ -9,16 +9,16 @@ import { prisma } from "../utils/prisma-client";
 
 export class AuthController {
   static async login(req: Request, res: Response) {
-    const { email, password } = req.body;
+    const { email, password } = req.body as { email: string; password: string };
     try {
       if (!email || !password) {
         return res
-          .status(401)
+          .status(400)
           .json({ message: "Email or Password is required" });
       }
       const user = await prisma.user.findUnique({
         where: {
-          email,
+          email: email.toLocaleLowerCase(),
         },
       });
       if (!user) {
@@ -48,12 +48,12 @@ export class AuthController {
     }
   }
   static async registration(req: Request, res: Response) {
-    const { email, password } = req.body;
+    const { email, password } = req.body as { email: string; password: string };
     console.log(email, password);
     try {
       if (!email || !password) {
         return res
-          .status(401)
+          .status(400)
           .json({ message: "Email or Password is required" });
       }
       const user = await prisma.user.findUnique({
