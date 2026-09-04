@@ -1,6 +1,4 @@
 import { styles } from "@/assets/styles/auth.styles";
-import { COLORS } from "@/constants/colors";
-import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
   Image,
@@ -17,7 +15,6 @@ const SignIn = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [repeatPassword, setRepeatPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [repeatPasswordError, setRepeatPasswordError] = useState("");
@@ -73,12 +70,6 @@ const SignIn = () => {
         <Text style={styles.title}>
           {isRegistration ? "Create account?" : "Welcome Back"}
         </Text>
-        {error ? (
-          <View style={styles.errorBox}>
-            <Ionicons name="alert-circle" size={20} color={COLORS.expense} />
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-        ) : null}
         <View style={{ marginBottom: 16 }}>
           <TextInput
             style={[styles.input, emailError && styles.errorInput]}
