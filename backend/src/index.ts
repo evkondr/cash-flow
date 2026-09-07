@@ -28,10 +28,3 @@ app.get("/", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-declare global {
-  namespace Express {
-    interface Request {
-      userId: number;
-    }
-  }
-}
